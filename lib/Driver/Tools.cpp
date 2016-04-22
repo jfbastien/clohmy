@@ -3178,7 +3178,8 @@ static void SplitDebugInfo(const ToolChain &TC, Compilation &C, const Tool &T,
 static bool shouldEnableVectorizerAtOLevel(const ArgList &Args, bool isSlpVec) {
   if (Arg *A = Args.getLastArg(options::OPT_O_Group)) {
     if (A->getOption().matches(options::OPT_O4) ||
-        A->getOption().matches(options::OPT_Ofast))
+        A->getOption().matches(options::OPT_Ofast) ||
+        A->getOption().matches(options::OPT_OhMy))
       return true;
 
     if (A->getOption().matches(options::OPT_O0))
@@ -10974,6 +10975,8 @@ void NVPTX::Assembler::ConstructJob(Compilation &C, const JobAction &JA,
     if (A->getOption().matches(options::OPT_O4) ||
         A->getOption().matches(options::OPT_Ofast))
       OOpt = "3";
+    else if (A->getOption().matches(options::OPT_OhMy))
+      OOpt = "2";
     else if (A->getOption().matches(options::OPT_O0))
       OOpt = "0";
     else if (A->getOption().matches(options::OPT_O)) {

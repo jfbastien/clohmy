@@ -87,6 +87,9 @@ static unsigned getOptimizationLevel(ArgList &Args, InputKind IK,
     if (A->getOption().matches(options::OPT_O0))
       return 0;
 
+    if (A->getOption().matches(options::OPT_OhMy))
+      return 2;
+
     if (A->getOption().matches(options::OPT_Ofast))
       return 3;
 
@@ -115,6 +118,12 @@ static unsigned getOptimizationLevelSize(ArgList &Args) {
       }
     }
   }
+  return 0;
+}
+
+static unsigned getOptimizationLevelOhMy(ArgList &Args) {
+  if (Arg *A = Args.getLastArg(options::OPT_O_Group))
+    return A->getOption().matches(options::OPT_OhMy);
   return 0;
 }
 
@@ -508,6 +517,7 @@ static bool ParseCodeGenArgs(CodeGenOptions &Opts, ArgList &Args, InputKind IK,
   Opts.NoCommon = Args.hasArg(OPT_fno_common);
   Opts.NoImplicitFloat = Args.hasArg(OPT_no_implicit_float);
   Opts.OptimizeSize = getOptimizationLevelSize(Args);
+  Opts.OhMy = getOptimizationLevelOhMy(Args);
   Opts.SimplifyLibCalls = !(Args.hasArg(OPT_fno_builtin) ||
                             Args.hasArg(OPT_ffreestanding));
   if (Opts.SimplifyLibCalls)
